@@ -1,0 +1,9 @@
+03-26 10:03:53 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "USER" not found; SQL statement:
+INSERT INTO USER (ID, NAME) VALUES (?, ?) [42102-186]
+03-26 10:05:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "USER" not found; SQL statement:
+INSERT INTO USER (ID, NAME) VALUES (?, ?) [42102-186]
+03-26 10:06:35 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "USER" not found; SQL statement:
+SELECT ID FROM USER WHERE ID <> ID [42102-186]
