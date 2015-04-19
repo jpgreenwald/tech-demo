@@ -4,35 +4,31 @@ import com.google.inject.persist.Transactional;
 import io.swsb.entity.User;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 
 /**
  * Created by swsb
  */
-@Singleton
 public class HelloWorldService
 {
     @Inject
-    private Provider<EntityManager> em;
+    private EntityManager em;
 
     public String sayHello()
     {
         return "hello";
     }
 
+
     @Transactional
-    public void createUser()
+    public User createUser()
     {
+//        User user = new User();
+//        user.setId(1L);
+//        user.setName("sample");
 
-
-        User user = new User();
-        user.setId(1L);
-        user.setName("sample");
-
-
-
-        em.get().persist(user);
+        User dbUser = em.find(User.class, 1L);
+        dbUser.setName(System.currentTimeMillis() + "- now");
+        return dbUser;
     }
 }

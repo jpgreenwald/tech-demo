@@ -3,6 +3,7 @@ package io.swsb.managed;
 import com.google.inject.persist.PersistFilter;
 import com.google.inject.servlet.GuiceFilter;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.jboss.resteasy.plugins.guice.GuiceResteasyBootstrapServletContextListener;
@@ -33,15 +34,22 @@ public class ExampleGuiceJettyServer implements Managed
     {
         server = new Server(8080);
 
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath("/");
-        server.setHandler(context);
+//        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+//        context.setContextPath("/");
+//        server.setHandler(context);
 
-        ServletHolder servletHolder = new ServletHolder(HttpServletDispatcher.class);
-        context.addEventListener(contextListener);
-        context.addFilter(PersistFilter.class, "/*", EnumSet.allOf(DispatcherType.class));
-//        context.addFilter(GuiceFilter.class, "/*", EnumSet.allOf(DispatcherType.class));
-        context.addServlet(servletHolder, "/*");
+//        ServletHolder servletHolder = new ServletHolder(HttpServletDispatcher.class);
+//        context.addEventListener(contextListener);
+//        context.addFilter(PersistFilter.class, "/*", EnumSet.allOf(DispatcherType.class));
+////        context.addFilter(GuiceFilter.class, "/*", EnumSet.allOf(DispatcherType.class));
+//        context.addServlet(servletHolder, "/*");
+
+
+        ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        servletContextHandler.addEventListener(contextListener);
+        servletContextHandler.addFilter(GuiceFilter.class, "/*", EnumSet.allOf(DispatcherType.class));
+        servletContextHandler.addServlet(DefaultServlet.class, "/");
+        server.setHandler(servletContextHandler);
 
         server.start();
     }

@@ -1,5 +1,8 @@
 package io.swsb.entity;
 
+import io.swsb.rest.Views;
+import org.codehaus.jackson.map.annotate.JsonView;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -12,6 +15,7 @@ import javax.persistence.Table;
 @Table
 public class User
 {
+    @JsonView(Views.Private.class)
     @Id
     private Long id;
 

@@ -9,11 +9,10 @@ import com.google.inject.persist.jpa.JpaPersistModule;
 import com.google.inject.servlet.ServletModule;
 import io.swsb.managed.Managed;
 import io.swsb.module.AutoStartModule;
-import io.swsb.module.ExampleResourceModule;
-import io.swsb.rest.*;
-import org.apache.bval.guice.ValidationModule;
+import io.swsb.rest.HelloResource;
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
+import org.testng.annotations.BeforeSuite;
 
 import javax.inject.Singleton;
 import java.util.List;
@@ -22,11 +21,13 @@ import java.util.Properties;
 /**
  * Created by swsb
  */
-public class Bootstrap
+public class TestBootstrap
 {
-    public static void main(String[] args) throws Exception
-    {
+    private Injector injector;
 
+    @BeforeSuite
+    public void before() throws Exception
+    {
         JpaPersistModule jpaPersistModule = new JpaPersistModule("sample-ds");
         Properties properties = new Properties();
         properties.setProperty(PersistenceUnitProperties.JDBC_URL, "jdbc:h2:./test");
@@ -39,23 +40,19 @@ public class Bootstrap
         properties.setProperty("eclipselink.refresh", "true");
         jpaPersistModule.properties(properties);
 
-        Injector injector = Guice.createInjector(new ServletModule()
+        injector = Guice.createInjector(new ServletModule()
         {
             @Override
             protected void configureServlets()
             {
                 bind(HelloResource.class);
-                bind(ConstraintViolationExceptionMapper.class);
-                bind(NotFoundExceptionMapper.class);
-                bind(HeaderFilter.class);
-                bind(LoggedFilter.class);
 
                 bind(HttpServletDispatcher.class).in(Singleton.class);
 
                 filter("/*").through(PersistFilter.class);
                 serve("/*").with(HttpServletDispatcher.class);
             }
-        }, new AutoStartModule(), jpaPersistModule, new ValidationModule());
+        }, new AutoStartModule(), jpaPersistModule);
 
         List<Class<Managed>> managedServices = injector.getInstance(Key.get(new TypeLiteral<List<Class<Managed>>>()
         {
@@ -68,8 +65,10 @@ public class Bootstrap
             injector.getInstance(managedClass).start();
             //register shutdown hook here
         }
+    }
 
-//        HelloWorldService helloWorldService = injector.getInstance(HelloWorldService.class);
-//        helloWorldService.createUser();
+    public <T> T getInstance(Class<T> instance)
+    {
+        return injector.getInstance(instance);
     }
 }

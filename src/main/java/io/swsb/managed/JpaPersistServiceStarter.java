@@ -8,19 +8,19 @@ import javax.inject.Singleton;
 /**
  * Created by swsb
  */
-@Singleton
-public class JpaPersistServiceStarter implements Managed
+
+public class JpaPersistServiceStarter
 {
     @Inject
     private PersistService persistService;
 
-    @Override
+
     public void start() throws Exception
     {
         persistService.start();
     }
 
-    @Override
+
     public void stop() throws Exception
     {
         persistService.stop();
